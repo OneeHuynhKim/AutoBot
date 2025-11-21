@@ -9,6 +9,7 @@ import { GiClick } from "react-icons/gi";
 import { AiFillSafetyCertificate } from "react-icons/ai";
 import { HiSignal } from "react-icons/hi2";
 import { IoIosWarning } from "react-icons/io";
+import Link from "next/link";
 
 const Home = () => {
     useEffect(() => {
@@ -31,7 +32,7 @@ const Home = () => {
                 <div>
                     <div className="text-white text-[2.2rem] font-bold">Công nghệ đọc lệnh - Thị trường phản hồi</div>
                     <div className="flex flex-col gap-3">
-                        <div className="text-white text-[1.2rem]">Đăng kí với 3 bước đơn giản</div>
+                        <div className="text-white text-[1.2rem]">Đăng kí ngay chỉ với 3 bước đơn giản</div>
                         <div className="text-white flex gap-3"><FaCheck />Tiến hành đăng ký</div>
                         <div className="text-white flex gap-3"><FaCheck />Xác thực OTP</div>
                         <div className="text-white flex gap-3"><FaCheck />Kích hoạt tài khoản</div>
@@ -40,7 +41,7 @@ const Home = () => {
                 </div>
 
                 <button className="slice mt-3">
-                    <span className="text">Đăng ký</span>
+                    <Link href={"/auth/signup"} className="text">Đăng ký</Link>
                 </button>
             </div>
 

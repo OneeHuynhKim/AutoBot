@@ -12,6 +12,7 @@ import { MdKeyboardBackspace } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { differenceInYears } from 'date-fns';
 import { isEmailValid, isPasswordValid, isUserNameValid } from "../shared/validator/checkform";
+import { FaArrowLeftLong } from "react-icons/fa6";
 const SignupOne = () => {
 
     const [email, setEmail] = useState<string>('');
@@ -202,12 +203,15 @@ const SignupOne = () => {
                     className="object-cover"
                 />
                 <div className="relative z-10 flex items-center w-full h-full">
-                    <div className="w-[50%] px-20">
-                        <div>
-                            <Link className="text-white" href={"/"}>Trang chủ</Link>
-                        </div>
+                    <div className="w-[200px] h-10 border flex items-center font-semibold text-white justify-center rounded-[30px] top-115 absolute left-40 hover:bg-white hover:text-black transition-colors duration-300 ease-in-out">
+                        <Link className=" flex items-center gap-2" href={"/"}> <FaArrowLeftLong />Trở về trang chủ</Link>
+                    </div>
+                    <div className="w-[50%] px-40 flex flex-col gap-1">
                         <div className="text-white text-[2rem]">
-                            Chào mừng bạn đến với AutoBot
+                            Chào mừng bạn đến với
+                        </div>
+                        <div className="text-white text-[4.6rem] font-semibold leading-none">
+                            AutoBot
                         </div>
                         <div className="text-white">
                             “Chứng khoán tự động, lợi nhuận chủ động”

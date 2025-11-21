@@ -83,7 +83,7 @@ const Header = () => {
     return (
         <div className="sticky top-3 z-90 mx-10">
             <div
-                className={`w-full h-20 flex items-center rounded-[50px] justify-between px-10 sticky top-0 z-50 backdrop-blur-md transition-colors 
+                className={`w-full h-20 flex items-center text-black rounded-[50px] justify-between px-10 sticky top-0 z-50 backdrop-blur-md transition-colors 
                 ${isTop ? "bg-white/10" : "bg-white/5"}`}>
 
                 <div className="flex items-center">
@@ -99,7 +99,7 @@ const Header = () => {
 
                 <div
                     className={`flex items-center gap-10 text-[17px]
-                    ${isTop ? "text-white dark:text-white" : "text-black dark:text-black"}`}
+                    ${isTop ? "text-black dark:text-white" : "text-black dark:text-black"}`}
                 >
 
                     <Link href="/" className="relative group hover:text-blue-400 transition-all duration-100">
@@ -154,14 +154,14 @@ const Header = () => {
                                 ) : (
                                     <PiUserCircleFill className={`text-4xl ${isTop ? "text-white" : "text-black"} hover:text-blue-400`} />
                                 )}
-                                <span className={`text-[17px] transition ${isTop ? "text-white" : "text-black"} hover:text-[#334eac"]`}>
+                                <span className={`text-[17px] transition ${isTop ? "text-black" : "text-black"} hover:text-[#334eac"]`}>
                                     {user.fullName}
                                 </span>
                             </>
                         ) : (
                             <>
                                 <IoIosSearch />
-                                <Link href="/auth/signin" className="block py-2 px-5 hover:scale-105 hover:bg-blue-500 rounded-3xl hover:text-white transition-all duration-300">
+                                <Link href="/auth/signin" className="block py-2 text-black px-5 hover:scale-105 hover:bg-blue-500 rounded-3xl hover:text-white transition-all duration-300">
                                     Tài khoản
                                 </Link>
                             </>
@@ -208,7 +208,7 @@ const Header = () => {
                                     </div>
 
                                     <motion.div
-                                        className="absolute z-80 top-10 right-0 w-[400px] h-[350px] bg-white shadow-3xl rounded-2xl"
+                                        className="absolute z-800 top-10 right-0 w-[400px] max-h-[350px] bg-white shadow-3xl rounded-2xl"
                                         initial={{ x: 50, opacity: 0 }}
                                         animate={{ x: 0, opacity: 1 }}
                                         transition={{ ease: 'easeOut', bounce: .3, duration: 0.4, delay: 0.1 }}
@@ -250,7 +250,7 @@ const Header = () => {
                                     </motion.div>
                                 </div>
                             </div>
-                            <div className="mt-95 pt-4">
+                            <div className="mt-85 pt-4">
                                 <div className="border border-gray-200 bg-white rounded-xl">
                                     {mainMenu.map((item, index) => (
                                         <Link

@@ -3,12 +3,13 @@
 import axios from "axios";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaPlus } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { parseISO, getDate, getMonth, getYear } from "date-fns";
 import handleUpload from "../shared/cloudinary/upload-image";
+import { IoCheckmark, IoClose } from "react-icons/io5";
 
 export const ChangeInfor = ({ title, field, user, userId, identify, accessToken, errIdentify, setIdentify, setOpenInfo, setErrInfo, setUser }: { title: string; field: string, user: any, userId: string, accessToken: string | undefined, identify: any; errIdentify: any; setIdentify: (value: string) => void; setOpenInfo: (value: boolean) => void; setErrInfo: (value: string) => void; setUser: (value: string) => void }) => {
   const handleUpdateInfo = async () => {
@@ -106,7 +107,7 @@ export const ChangeAvatar = ({ title, user, selectedAvatar, setOpenAvatar, setEr
     console.log(user.id);
     const formData = new FormData();
     formData.append("UrlAvatar", result);
-    axios.post(`${process.env.NEXT_PUBLIC_URL_API}Authen/UpdateAvatar?Id=${user.id}`, 
+    axios.post(`${process.env.NEXT_PUBLIC_URL_API}Authen/UpdateAvatar?Id=${user.id}`,
       formData,
       {
         headers: {
@@ -185,70 +186,196 @@ export const ChangeAvatar = ({ title, user, selectedAvatar, setOpenAvatar, setEr
   )
 }
 
-export const ChangePassword = ({ title, isPassWord, setOpenPassword }: { title: string; isPassWord: string; setOpenPassword: (value: boolean) => void }) => {
+export const ChangePassword = ({ title, userId, isPassWord, setOpenPassword }: { title: string; userId: string, isPassWord: string; setOpenPassword: (value: boolean) => void }) => {
   const [currentPassword, setCurrentPassword] = useState<any>('');
   const [newPassword, setNewPassword] = useState<any>('');
   const [confirmPassword, setConfirmPassword] = useState<any>('');
+  const [changeStep, setChangeStep] = useState<boolean>(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState<boolean>(false);
+  const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [isLengthValid, setIsLengthValid] = useState<boolean>(false);
+  const [hasUpperLower, setHasUpperLower] = useState<boolean>(false);
+  const [hasNumberOrSymbol, setHasNumberOrSymbol] = useState<boolean>(false);
+  const isPasswordValid = (newPassword: string) => newPassword.length >= 8;
+  const isPasswordMatch = (confirmPassword: string) => confirmPassword === newPassword;
+
+  const handlePasswordChange = (value: string) => {
+    setNewPassword(value);
+    if (!value) {
+      setIsLengthValid(false);
+      setHasUpperLower(false);
+      setHasNumberOrSymbol(false);
+      return;
+    }
+    setIsLengthValid(value.length >= 8);
+    setHasUpperLower(/[a-z]/.test(value) && /[A-Z]/.test(value));
+    setHasNumberOrSymbol(/[0-9]/.test(value) || /[^A-Za-z0-9]/.test(value));
+  };
+  const handleChange = async () => {
+    if (!userId) {
+      toast.error('Tài khoản không tồn tại.');
+      return;
+    }
+
+
+    if (!currentPassword || !confirmPassword || !newPassword) {
+      !currentPassword && toast.error('Mật khẩu hiện tại không được để trống');
+      !newPassword && toast.error('Mật khẩu mới không được để trống')
+      !confirmPassword && toast.error('Mật khẩu xác nhận không dược để trống');
+      return;
+    }
+
+    const isPassValid = isPasswordValid(newPassword);
+    const isMatchValid = isPasswordMatch(confirmPassword);
+
+    if (!isPassValid) {
+      toast.error('Mật khẩu không hợp lệ');
+    }
+
+    if (!hasNumberOrSymbol) {
+      toast.error('Mật khẩu phải có số hoặc ký tự đặc biệt');
+      return;
+    }
+
+    await axios.post(`${process.env.NEXT_PUBLIC_URL_API}Authen/UpdatePassAfterOtp`, {
+      id: userId,
+      newPassword: newPassword,
+      confirmPassword: confirmPassword
+    }).then(res => {
+      const result = res.data;
+      result.status === 200
+        ? (toast.success('Đổi mật khẩu thành công!'))
+        : result.message === 'Mật khẩu không được để trống !'
+          ? toast.error('Mật khẩu không được để trống !')
+          : result.message === 'Xác nhận mật khẩu sai !'
+            ? toast.error('Xác nhận mật khẩu sai !')
+            : toast.error('Không có user nào được tìm thấy!');
+    }).catch(err => {
+      console.log(err.response?.data);
+    })
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div
-        className="bg-liner max-w-[420px] w-full p-7 shadow-lg relative rounded-3xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between mb-4">
-          <div></div>
-          <div onClick={() => { setOpenPassword(false) }} className="cursor-pointer">
-            <FaXmark className="text-[#777] text-2xl" />
-          </div>
-        </div>
-
-        <h2 className="text-xl font-semibold mb-2">Cập nhật {title} của bạn</h2>
-        <p className="text-sm text-gray-700 mb-4">
-          {title} của bạn sẽ được hiển thị trên trang cá nhân, trong phần bình luận và bài đăng.
-        </p>
-
-        <div className="space-y-3">
-          {isPassWord !== '' && (
-            <div className="flex flex-col gap-2">
-              <label className="text-xs font-semibold">Mật khẩu hiện tại</label>
-              <input
-                autoFocus={true}
-                type="text"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="Nhập mật khẩu hiện tại..."
-                className="w-full py-2 px-5 border border-gray-300 rounded-3xl focus:outline-[#1dbfaf]"
-              />
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        handleChange();
+      }}>
+        <div
+          className="bg-liner max-w-[420px] w-full p-7 shadow-lg relative rounded-3xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div></div>
+            <div onClick={() => { setOpenPassword(false) }} className="cursor-pointer">
+              <FaXmark className="text-[#777] text-2xl" />
             </div>
-          )}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold">Mật khẩu mới</label>
-            <input
-              autoFocus={isPassWord === ''}
-              type="text"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Nhập mật khẩu mới..."
-              className="w-full py-2 px-5 border border-gray-300 rounded-3xl focus:outline-[#1dbfaf]"
-            />
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold">Xác nhận mật khẩu</label>
-            <input
-              type="text"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Xác nhận mật khẩu..."
-              className="w-full py-2 px-5 border border-gray-300 rounded-3xl focus:outline-[#1dbfaf]"
-            />
-          </div>
-        </div>
 
-        <button className="mt-6 w-full py-5 rounded-3xl bg-custom-gradient text-white font-semibold cursor-pointer">
-          Lưu thay đổi
-        </button>
-      </div>
+          <h2 className="text-xl font-semibold mb-2">Cập nhật {title} của bạn</h2>
+          <p className="text-sm text-gray-700 mb-4">
+            {title} của bạn sẽ được hiển thị trên trang cá nhân, trong phần bình luận và bài đăng.
+          </p>
+
+          <div className="space-y-3">
+            {isPassWord !== '' && (
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-semibold">Mật khẩu hiện tại</label>
+                <div className="relative">
+                  <input
+                    autoFocus={true}
+                    type={showCurrentPassword ? "text" : "password"}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Nhập mật khẩu hiện tại..."
+                    className="w-full py-2 px-5 border border-gray-300 rounded-3xl focus:outline-[#1dbfaf]"
+                  />
+                  <div
+                    className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+                    onClick={() => setShowCurrentPassword((prev) => !prev)}
+                  >
+                    {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-semibold">Mật khẩu mới</label>
+              <div className="relative">
+                <input
+                  autoFocus={isPassWord === ''}
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => handlePasswordChange(e.target.value)}
+                  placeholder="Nhập mật khẩu mới..."
+                  className="w-full py-2 px-5 border border-gray-300 rounded-3xl focus:outline-[#1dbfaf]"
+                />
+                <div
+                  className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+                  onClick={() => setShowNewPassword((prev) => !prev)}
+                >
+                  {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                </div>
+              </div>
+              {newPassword.length > 0 && (
+                <div className="mt-5 text-xs">
+                  <div className="font-semibold">Tạo mật khẩu phải:</div>
+                  <div className="mt-3 font-medium space-y-1.5">
+                    <div className="flex gap-2 items-center">
+                      {isLengthValid ? <IoCheckmark className="text-green-500" /> : <IoClose className="text-red-500" />}
+                      <div className={`${isLengthValid ? 'text-green-500' : 'text-red-500'}`}>chứa ít nhất 8 ký tự</div>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      {hasUpperLower ? <IoCheckmark className="text-green-500" /> : <IoClose className="text-red-500" />}
+                      <div className={`${hasUpperLower ? 'text-green-500' : 'text-red-500'}`}>chứa cả chữ thường (a-z) và chữ in hoa (A-Z)</div>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      {hasNumberOrSymbol ? <IoCheckmark className="text-green-500" /> : <IoClose className="text-red-500" />}
+                      <div className={`${hasNumberOrSymbol ? 'text-green-500' : 'text-red-500'}`}>chứa ít nhất một số (0-9) hoặc một ký hiệu</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-semibold">Xác nhận mật khẩu</label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Xác nhận mật khẩu..."
+                  className="w-full py-2 px-5 border border-gray-300 rounded-3xl focus:outline-[#1dbfaf]"
+                />
+                <div
+                  className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                >
+                  {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                </div>
+              </div>
+              {confirmPassword.length > 0 && (
+                <div className="mt-5 text-xs">
+                  <div className="font-semibold">Tạo mật khẩu phải:</div>
+                  <div className="mt-3 font-medium space-y-1.5">
+                    <div className="flex gap-2 items-center">
+                      {isPasswordMatch(confirmPassword) ? <IoCheckmark className="text-green-500" /> : <IoClose className="text-red-500" />}
+                      <div className={`${isPasswordMatch(confirmPassword) ? 'text-green-500' : 'text-red-500'}`}>trùng với mật khẩu</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <button type="submit"
+            onClick={handleChange}
+            className="mt-6 w-full py-5 rounded-3xl bg-custom-gradient text-white font-semibold cursor-pointer">
+            Lưu thay đổi
+          </button>
+        </div>
+      </form>
     </div>
   )
 }

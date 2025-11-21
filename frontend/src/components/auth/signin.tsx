@@ -17,6 +17,7 @@ import CryptoJS from "crypto-js";
 import { encryptEmail } from "@/utils/cryptoEmail";
 import { getDeviceFingerprint } from "@/utils/getDeviceFingerprint";
 import { isEmailValid, isPasswordValid, isPhoneNumberValid, isUserNameValid } from "../shared/validator/checkform";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 interface CustomJwtPayload extends JwtPayload {
     role: string;
@@ -137,12 +138,15 @@ const Signin = () => {
                     className="object-cover"
                 />
                 <div className="relative z-10 flex items-center w-full h-full">
-                    <div className="w-[50%] px-20">
-                        <div className="w-[100px] h-10 border flex items-center justify-center rounded-[30px]">
-                            <Link className="text-white" href={"/"}>Trang chủ</Link>
-                        </div>
+                    <div className="w-[200px] h-10 border flex items-center font-semibold text-white justify-center rounded-[30px] top-115 absolute left-40 hover:bg-white hover:text-black transition-colors duration-300 ease-in-out">
+                        <Link className=" flex items-center gap-2" href={"/"}> <FaArrowLeftLong />Trở về trang chủ</Link>
+                    </div>
+                    <div className="w-[50%] px-40 flex flex-col gap-1">
                         <div className="text-white text-[2rem]">
-                            Chào mừng bạn đến với AutoBot
+                            Chào mừng bạn đến với
+                        </div>
+                        <div className="text-white text-[4.6rem] font-semibold leading-none">
+                            AutoBot
                         </div>
                         <div className="text-white">
                             “Chứng khoán tự động, lợi nhuận chủ động”

@@ -23,12 +23,10 @@ const IntroductionPage = () => {
                     src={"/assets/images/introduction/bgintro.jpg"}
                     className="w-full h-[650px] object-cover" />
             </div>
-
             <div className="absolute top-23 left-0 w-full h-[650px] bg-black/30 pointer-events-none"></div>
-            <div className="text-[40px] font-semibold absolute top-38 left-20 z-50 text-white">Chào mừng bạn đến với bot đầu tư chứng khoán</div>
-
-            <div className="text-white left-20 z-50 top-55 absolute w-[600px] leading-8 text-justify">Trong thời đại công nghệ 4.0, việc ứng dụng trí tuệ nhân tạo (AI) và máy học (machine learning) vào đầu tư chứng khoán đã trở nên phổ biến và đem lại nhiều lợi ích đáng kể cho nhà đầu tư. Bot Đầu Tư Chứng Khoán là một công cụ mạnh mẽ giúp bạn tối ưu hóa danh mục đầu tư và gia tăng lợi nhuận với sự hỗ trợ của công nghệ hiện đại nhất, đặc biệt được phát triển trên nền tảng Amibroker.</div>
-
+            <div className="text-[1.8rem] absolute top-38 left-20 z-50 text-white">Chào mừng bạn đến với</div>
+            <div className="text-[2.4rem] font-semibold absolute top-50 left-20 z-50 text-white">AutoBot - Chứng khoán tự động</div>
+            <div className="text-white left-20 z-50 top-80 absolute w-[600px] leading-8 text-justify">Trong thời đại công nghệ 4.0, việc ứng dụng trí tuệ nhân tạo (AI) và máy học (machine learning) vào đầu tư chứng khoán đã trở nên phổ biến và đem lại nhiều lợi ích đáng kể cho nhà đầu tư. Bot Đầu Tư Chứng Khoán là một công cụ mạnh mẽ giúp bạn tối ưu hóa danh mục đầu tư và gia tăng lợi nhuận với sự hỗ trợ của công nghệ hiện đại nhất, đặc biệt được phát triển trên nền tảng Amibroker.</div>
             <div className="text-[40px] mt-4 font-semibold text-center">Mục tiêu của chúng tôi</div>
             <div className="flex gap-40 mx-auto justify-center mt-14">
                 <div className="relative w-[250px] h-[180px] bg-white  flex flex-col items-center rounded-2xl">

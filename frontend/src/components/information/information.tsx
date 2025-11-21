@@ -2,7 +2,7 @@
 import { RootState } from "@/redux/store";
 import axios from "axios";
 import { format } from "date-fns";
-import { vi } from "date-fns/locale";
+import { id, vi } from "date-fns/locale";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -93,7 +93,7 @@ const Information = () => {
         if (user?.birthday !== undefined) {
             setBirthDay(user.birthday);
         }
-        if(user?.urlAvatar !== undefined){
+        if (user?.urlAvatar !== undefined) {
             setAvatar(user?.urlAvatar)
         }
         handleGetInforUser();
@@ -310,6 +310,7 @@ const Information = () => {
                     {openPassword &&
                         <ChangePassword
                             title="Mật khẩu"
+                            userId={userInfo?.Id}
                             isPassWord={user.passWord}
                             setOpenPassword={setOpenPassword}
                         />
@@ -317,8 +318,10 @@ const Information = () => {
                     {openTwoStep &&
                         <ChangeTwoStep
                             title="Xác thực 2 bước"
-                            isTwoStep={isTwoStep}
-                            setIsTwoStep={setIsTwoStep}
+                            isTwoStep={user?.twoStep || false}
+                            setIsTwoStep={(value) => {
+                                setUser({ ...user, twoStep: value });
+                            }}
                             userId={user.id}
                             setOpenTwoStep={setOpenTwoStep}
                         />
